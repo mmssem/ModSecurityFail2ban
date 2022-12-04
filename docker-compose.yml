@@ -7,15 +7,27 @@ networks:
 services:
   front_nginx:
     container_name: front_nginx_cname
-    image: nginx:1.23.2
+    #image: nginx:1.23.2       #nginx 이미지를 직접 사용하지 않고   
+    build: ./docker/front/     #Dockerfile을 이용하여 직접 만든 이미지를 사용 
     restart: always
+    privileged: true
     ports:
-      - "80:80"       #web
-      - "81:81"       #web2
-      - "82:82"       #phpmyadmin
+      - "80:80"
+      - "81:81"
+      - "82:82"
     volumes:
-      - ./docker/front/default.conf:/etc/nginx/conf.d/default.conf
-      - ./docker/front/nginx.conf:/etc/nginx/nginx.conf
+      #- ./docker/front/default.conf:/etc/nginx/conf.d/default.conf
+      #- ./docker/front/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/front/default.conf:/usr/local/nginx/conf.d/default.conf
+      - ./docker/front/nginx.conf:/usr/local/nginx/conf/nginx.conf      
+      - ./docker/front/modsecurity.conf:/usr/local/nginx/conf/modsecurity.conf          #추가 내용
+      - ./docker/front/modsec_includes.conf:/usr/local/nginx/conf/modsec_includes.conf  #추가 내용
+      - ./docker/front/crs-setup.conf:/usr/local/nginx/conf/rules/crs-setup.conf        #추가 내용
+      - ./docker/fail2ban/jail.conf:/etc/fail2ban/jail.conf                             #추가 내용
+      - ./docker/fail2ban/jail.conf:/etc/fail2ban/jail.local                            #추가 내용
+      - ./docker/fail2ban/filter.d/:/etc/fail2ban/filter.d/                             #추가 내용
+      - ./log/logs/:/usr/local/nginx/logs/
+      - ./log/log/:/var/log/      
     depends_on:
       - web
       - web2

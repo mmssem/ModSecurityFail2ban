@@ -8,7 +8,8 @@ services:
   front_nginx:
     container_name: front_nginx_cname
     #image: nginx:1.23.2       #nginx 이미지를 직접 사용하지 않고   
-    build: ./docker/front/     #Dockerfile을 이용하여 직접 만든 이미지를 사용 
+    #build: ./docker/front/     #Dockerfile도 이용하지 않고
+    image: mungkhs/nginxwaf:1.2 #DockerHub에 올려진 우리의 이미지를 이용함.
     restart: always
     privileged: true
     ports:
